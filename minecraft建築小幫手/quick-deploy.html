@@ -1,0 +1,1164 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Minecraft 建築小幫手</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        /* 全局樣式 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Noto Sans TC', sans-serif;
+            background: linear-gradient(135deg, #2c5530 0%, #1a472a 50%, #0f2f1a 100%);
+            min-height: 100vh;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* 標題區域 */
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 30px 0;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 10px;
+        }
+
+        .logo i {
+            font-size: 2.5rem;
+            color: #4CAF50;
+            text-shadow: 0 0 10px rgba(76, 175, 80, 0.5);
+        }
+
+        .logo h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #fff;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            color: #ccc;
+            font-weight: 300;
+        }
+
+        /* 主要內容區域 */
+        .main-content {
+            margin-bottom: 40px;
+        }
+
+        .calculator-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        /* 計算器卡片 */
+        .calculator-card {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .calculator-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4);
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #4CAF50;
+        }
+
+        .card-header i {
+            font-size: 1.8rem;
+            color: #4CAF50;
+        }
+
+        .card-header h2 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .card-content {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        /* 輸入組 */
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .input-group label {
+            font-weight: 500;
+            color: #555;
+            font-size: 0.95rem;
+        }
+
+        .input-group input,
+        .input-group select {
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background: #fff;
+        }
+
+        .input-group input:focus,
+        .input-group select:focus {
+            outline: none;
+            border-color: #4CAF50;
+            box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.1);
+        }
+
+        .input-group input[readonly] {
+            background: #f5f5f5;
+            color: #666;
+        }
+
+        /* 按鈕樣式 */
+        .calculate-btn {
+            background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+            color: white;
+            border: none;
+            padding: 15px 25px;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            box-shadow: 0 4px 15px rgba(76, 175, 80, 0.3);
+        }
+
+        .calculate-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(76, 175, 80, 0.4);
+            background: linear-gradient(135deg, #45a049 0%, #3d8b40 100%);
+        }
+
+        .calculate-btn:active {
+            transform: translateY(0);
+        }
+
+        .reset-btn {
+            background: linear-gradient(135deg, #f44336 0%, #d32f2f 100%);
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 10px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            box-shadow: 0 3px 10px rgba(244, 67, 54, 0.3);
+        }
+
+        .reset-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(244, 67, 54, 0.4);
+            background: linear-gradient(135deg, #d32f2f 0%, #c62828 100%);
+        }
+
+        /* 結果顯示 */
+        .results {
+            background: linear-gradient(135deg, #e8f5e8 0%, #f1f8f1 100%);
+            border: 2px solid #4CAF50;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 15px;
+            display: none;
+        }
+
+        .results.show {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .results h3 {
+            color: #2e7d32;
+            margin-bottom: 15px;
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+
+        .result-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 0;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .result-item:last-child {
+            border-bottom: none;
+        }
+
+        .result-label {
+            font-weight: 500;
+            color: #555;
+        }
+
+        .result-value {
+            font-weight: 600;
+            color: #2e7d32;
+            font-size: 1.1rem;
+        }
+
+        /* 總計卡片特殊樣式 */
+        .total-card {
+            background: linear-gradient(135deg, rgba(76, 175, 80, 0.1) 0%, rgba(76, 175, 80, 0.05) 100%);
+            border: 2px solid #4CAF50;
+        }
+
+        .total-card .card-header {
+            border-bottom-color: #4CAF50;
+        }
+
+        .total-card .card-header i {
+            color: #2e7d32;
+        }
+
+        /* 頁腳 */
+        .footer {
+            text-align: center;
+            padding: 30px 0;
+            color: #ccc;
+            font-size: 0.9rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        /* 動畫 */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* 響應式設計 */
+        @media (max-width: 768px) {
+            .container {
+                padding: 15px;
+            }
+            
+            .calculator-grid {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+            
+            .logo h1 {
+                font-size: 2rem;
+            }
+            
+            .logo i {
+                font-size: 2rem;
+            }
+            
+            .calculator-card {
+                padding: 20px;
+            }
+            
+            .card-header h2 {
+                font-size: 1.3rem;
+            }
+            
+            .input-group input,
+            .input-group select {
+                padding: 10px 12px;
+            }
+            
+            .calculate-btn {
+                padding: 12px 20px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .logo {
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .logo h1 {
+                font-size: 1.8rem;
+            }
+            
+            .subtitle {
+                font-size: 1rem;
+            }
+            
+            .calculator-card {
+                padding: 15px;
+            }
+            
+            .card-header {
+                flex-direction: column;
+                text-align: center;
+                gap: 10px;
+            }
+        }
+
+        /* 滾動條樣式 */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #4CAF50;
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #45a049;
+        }
+
+        /* 載入動畫 */
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: #fff;
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* 工具提示 */
+        .tooltip {
+            position: relative;
+            display: inline-block;
+        }
+
+        .tooltip .tooltiptext {
+            visibility: hidden;
+            width: 200px;
+            background-color: #333;
+            color: #fff;
+            text-align: center;
+            border-radius: 6px;
+            padding: 8px;
+            position: absolute;
+            z-index: 1;
+            bottom: 125%;
+            left: 50%;
+            margin-left: -100px;
+            opacity: 0;
+            transition: opacity 0.3s;
+            font-size: 0.8rem;
+        }
+
+        .tooltip:hover .tooltiptext {
+            visibility: visible;
+            opacity: 1;
+        }
+
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        
+        @keyframes slideOut {
+            from { transform: translateX(0); opacity: 1; }
+            to { transform: translateX(100%); opacity: 0; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <div class="logo">
+                <i class="fas fa-cube"></i>
+                <h1>Minecraft 建築小幫手</h1>
+            </div>
+            <p class="subtitle">計算您的建築所需方塊數量</p>
+        </header>
+
+        <main class="main-content">
+            <div class="calculator-grid">
+                <!-- 基礎形狀計算器 -->
+                <div class="calculator-card">
+                    <div class="card-header">
+                        <i class="fas fa-square"></i>
+                        <h2>基礎形狀計算器</h2>
+                    </div>
+                    <div class="card-content">
+                        <div class="input-group">
+                            <label for="length">長度 (方塊)</label>
+                            <input type="number" id="length" min="1" value="10" placeholder="輸入長度">
+                        </div>
+                        <div class="input-group">
+                            <label for="width">寬度 (方塊)</label>
+                            <input type="number" id="width" min="1" value="10" placeholder="輸入寬度">
+                        </div>
+                        <div class="input-group">
+                            <label for="height">高度 (方塊)</label>
+                            <input type="number" id="height" min="1" value="5" placeholder="輸入高度">
+                        </div>
+                        <div class="input-group">
+                            <label for="wall-thickness">牆壁厚度 (方塊)</label>
+                            <input type="number" id="wall-thickness" min="1" value="1" placeholder="牆壁厚度">
+                        </div>
+                        <button class="calculate-btn" onclick="calculateBasic()">
+                            <i class="fas fa-calculator"></i>
+                            計算方塊數量
+                        </button>
+                        <div class="results" id="basic-results"></div>
+                    </div>
+                </div>
+
+                <!-- 圓形建築計算器 -->
+                <div class="calculator-card">
+                    <div class="card-header">
+                        <i class="fas fa-circle"></i>
+                        <h2>圓形建築計算器</h2>
+                    </div>
+                    <div class="card-content">
+                        <div class="input-group">
+                            <label for="radius">半徑 (方塊)</label>
+                            <input type="number" id="radius" min="1" value="10" placeholder="輸入半徑">
+                        </div>
+                        <div class="input-group">
+                            <label for="circle-height">高度 (方塊)</label>
+                            <input type="number" id="circle-height" min="1" value="5" placeholder="輸入高度">
+                        </div>
+                        <div class="input-group">
+                            <label for="circle-wall-thickness">牆壁厚度 (方塊)</label>
+                            <input type="number" id="circle-wall-thickness" min="1" value="1" placeholder="牆壁厚度">
+                        </div>
+                        <button class="calculate-btn" onclick="calculateCircle()">
+                            <i class="fas fa-calculator"></i>
+                            計算圓形建築
+                        </button>
+                        <div class="results" id="circle-results"></div>
+                    </div>
+                </div>
+
+                <!-- 樓梯計算器 -->
+                <div class="calculator-card">
+                    <div class="card-header">
+                        <i class="fas fa-stairs"></i>
+                        <h2>樓梯計算器</h2>
+                    </div>
+                    <div class="card-content">
+                        <div class="input-group">
+                            <label for="stairs-length">樓梯長度 (方塊)</label>
+                            <input type="number" id="stairs-length" min="1" value="10" placeholder="樓梯長度">
+                        </div>
+                        <div class="input-group">
+                            <label for="stairs-width">樓梯寬度 (方塊)</label>
+                            <input type="number" id="stairs-width" min="1" value="3" placeholder="樓梯寬度">
+                        </div>
+                        <div class="input-group">
+                            <label for="stairs-height">樓梯高度 (方塊)</label>
+                            <input type="number" id="stairs-height" min="1" value="5" placeholder="樓梯高度">
+                        </div>
+                        <button class="calculate-btn" onclick="calculateStairs()">
+                            <i class="fas fa-calculator"></i>
+                            計算樓梯方塊
+                        </button>
+                        <div class="results" id="stairs-results"></div>
+                    </div>
+                </div>
+
+                <!-- 金字塔計算器 -->
+                <div class="calculator-card">
+                    <div class="card-header">
+                        <i class="fas fa-mountain"></i>
+                        <h2>金字塔計算器</h2>
+                    </div>
+                    <div class="card-content">
+                        <div class="input-group">
+                            <label for="pyramid-base">底邊長度 (方塊)</label>
+                            <input type="number" id="pyramid-base" min="1" value="20" placeholder="底邊長度">
+                        </div>
+                        <div class="input-group">
+                            <label for="pyramid-height">金字塔高度 (方塊)</label>
+                            <input type="number" id="pyramid-height" min="1" value="10" placeholder="金字塔高度">
+                        </div>
+                        <div class="input-group">
+                            <label for="pyramid-style">金字塔樣式</label>
+                            <select id="pyramid-style">
+                                <option value="solid">實心金字塔</option>
+                                <option value="hollow">空心金字塔</option>
+                                <option value="hollow-with-rooms">空心帶房間</option>
+                            </select>
+                        </div>
+                        <button class="calculate-btn" onclick="calculatePyramid()">
+                            <i class="fas fa-calculator"></i>
+                            計算金字塔方塊
+                        </button>
+                        <div class="results" id="pyramid-results"></div>
+                    </div>
+                </div>
+
+                <!-- 球體計算器 -->
+                <div class="calculator-card">
+                    <div class="card-header">
+                        <i class="fas fa-globe"></i>
+                        <h2>球體計算器</h2>
+                    </div>
+                    <div class="card-content">
+                        <div class="input-group">
+                            <label for="sphere-radius">球體半徑 (方塊)</label>
+                            <input type="number" id="sphere-radius" min="1" value="10" placeholder="球體半徑">
+                        </div>
+                        <div class="input-group">
+                            <label for="sphere-style">球體樣式</label>
+                            <select id="sphere-style">
+                                <option value="solid">實心球體</option>
+                                <option value="hollow">空心球體</option>
+                                <option value="shell">球殼 (指定厚度)</option>
+                            </select>
+                        </div>
+                        <div class="input-group" id="shell-thickness-group" style="display: none;">
+                            <label for="shell-thickness">球殼厚度 (方塊)</label>
+                            <input type="number" id="shell-thickness" min="1" value="2" placeholder="球殼厚度">
+                        </div>
+                        <button class="calculate-btn" onclick="calculateSphere()">
+                            <i class="fas fa-calculator"></i>
+                            計算球體方塊
+                        </button>
+                        <div class="results" id="sphere-results"></div>
+                    </div>
+                </div>
+
+                <!-- 總計計算器 -->
+                <div class="calculator-card total-card">
+                    <div class="card-header">
+                        <i class="fas fa-list-ol"></i>
+                        <h2>總計計算器</h2>
+                    </div>
+                    <div class="card-content">
+                        <div class="input-group">
+                            <label for="block-type">方塊類型</label>
+                            <select id="block-type">
+                                <option value="stone">石頭</option>
+                                <option value="wood">木材</option>
+                                <option value="brick">磚塊</option>
+                                <option value="glass">玻璃</option>
+                                <option value="concrete">混凝土</option>
+                                <option value="custom">自定義</option>
+                            </select>
+                        </div>
+                        <div class="input-group">
+                            <label for="custom-block-name">自定義方塊名稱</label>
+                            <input type="text" id="custom-block-name" placeholder="輸入方塊名稱" style="display: none;">
+                        </div>
+                        <div class="input-group">
+                            <label for="total-blocks">總方塊數量</label>
+                            <input type="number" id="total-blocks" min="0" value="0" readonly>
+                        </div>
+                        <div class="input-group">
+                            <label for="estimated-time">預估建造時間</label>
+                            <input type="text" id="estimated-time" readonly>
+                        </div>
+                        <button class="calculate-btn" onclick="calculateTotal()">
+                            <i class="fas fa-calculator"></i>
+                            計算總計
+                        </button>
+                        <button class="reset-btn" onclick="resetAll()">
+                            <i class="fas fa-redo"></i>
+                            重置所有計算
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <footer class="footer">
+            <p>&copy; 2024 Minecraft 建築小幫手 | 讓您的建築夢想成真</p>
+        </footer>
+    </div>
+
+    <script>
+        // 全局變數
+        let totalBlocks = 0;
+        let calculationHistory = [];
+
+        // 頁面載入完成後初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeApp();
+        });
+
+        // 初始化應用程式
+        function initializeApp() {
+            // 設置事件監聽器
+            setupEventListeners();
+            
+            // 初始化球殼厚度輸入框的顯示/隱藏
+            updateShellThicknessVisibility();
+            
+            console.log('Minecraft 建築小幫手已載入完成！');
+        }
+
+        // 設置事件監聽器
+        function setupEventListeners() {
+            // 球體樣式變更時顯示/隱藏球殼厚度輸入框
+            document.getElementById('sphere-style').addEventListener('change', updateShellThicknessVisibility);
+            
+            // 方塊類型變更時顯示/隱藏自定義方塊名稱輸入框
+            document.getElementById('block-type').addEventListener('change', updateCustomBlockNameVisibility);
+            
+            // 為所有數字輸入框添加驗證
+            const numberInputs = document.querySelectorAll('input[type="number"]');
+            numberInputs.forEach(input => {
+                input.addEventListener('input', validateNumberInput);
+            });
+        }
+
+        // 更新球殼厚度輸入框的顯示/隱藏
+        function updateShellThicknessVisibility() {
+            const sphereStyle = document.getElementById('sphere-style').value;
+            const shellThicknessGroup = document.getElementById('shell-thickness-group');
+            
+            if (sphereStyle === 'shell') {
+                shellThicknessGroup.style.display = 'block';
+            } else {
+                shellThicknessGroup.style.display = 'none';
+            }
+        }
+
+        // 更新自定義方塊名稱輸入框的顯示/隱藏
+        function updateCustomBlockNameVisibility() {
+            const blockType = document.getElementById('block-type').value;
+            const customBlockName = document.getElementById('custom-block-name');
+            
+            if (blockType === 'custom') {
+                customBlockName.style.display = 'block';
+            } else {
+                customBlockName.style.display = 'none';
+            }
+        }
+
+        // 驗證數字輸入
+        function validateNumberInput(event) {
+            const value = parseInt(event.target.value);
+            if (value < 1) {
+                event.target.value = 1;
+            }
+        }
+
+        // 基礎形狀計算器
+        function calculateBasic() {
+            const length = parseInt(document.getElementById('length').value);
+            const width = parseInt(document.getElementById('width').value);
+            const height = parseInt(document.getElementById('height').value);
+            const wallThickness = parseInt(document.getElementById('wall-thickness').value);
+            
+            if (!validateInputs([length, width, height, wallThickness])) {
+                return;
+            }
+            
+            // 計算實心建築的方塊數量
+            const solidBlocks = length * width * height;
+            
+            // 計算空心建築的方塊數量
+            const innerLength = length - (2 * wallThickness);
+            const innerWidth = width - (2 * wallThickness);
+            const innerHeight = height - (2 * wallThickness);
+            
+            let hollowBlocks = 0;
+            if (innerLength > 0 && innerWidth > 0 && innerHeight > 0) {
+                const outerVolume = length * width * height;
+                const innerVolume = innerLength * innerWidth * innerHeight;
+                hollowBlocks = outerVolume - innerVolume;
+            } else {
+                hollowBlocks = solidBlocks; // 如果牆壁太厚，就等於實心
+            }
+            
+            // 計算牆壁方塊數量
+            const wallBlocks = (2 * length * height + 2 * width * height) * wallThickness;
+            
+            // 計算地板和天花板
+            const floorCeilingBlocks = 2 * length * width;
+            
+            const results = {
+                solid: solidBlocks,
+                hollow: hollowBlocks,
+                walls: wallBlocks,
+                floorCeiling: floorCeilingBlocks,
+                total: hollowBlocks
+            };
+            
+            displayResults('basic-results', '基礎形狀計算結果', results);
+            addToTotal(hollowBlocks, '基礎形狀建築');
+        }
+
+        // 圓形建築計算器
+        function calculateCircle() {
+            const radius = parseInt(document.getElementById('radius').value);
+            const height = parseInt(document.getElementById('circle-height').value);
+            const wallThickness = parseInt(document.getElementById('circle-wall-thickness').value);
+            
+            if (!validateInputs([radius, height, wallThickness])) {
+                return;
+            }
+            
+            // 計算圓形面積
+            const outerArea = Math.PI * radius * radius;
+            const innerRadius = radius - wallThickness;
+            const innerArea = innerRadius > 0 ? Math.PI * innerRadius * innerRadius : 0;
+            
+            // 計算實心圓柱體
+            const solidBlocks = Math.round(outerArea * height);
+            
+            // 計算空心圓柱體
+            const hollowBlocks = Math.round((outerArea - innerArea) * height);
+            
+            // 計算圓周長度
+            const circumference = 2 * Math.PI * radius;
+            const wallBlocks = Math.round(circumference * height * wallThickness);
+            
+            const results = {
+                solid: solidBlocks,
+                hollow: hollowBlocks,
+                walls: wallBlocks,
+                circumference: Math.round(circumference),
+                total: hollowBlocks
+            };
+            
+            displayResults('circle-results', '圓形建築計算結果', results);
+            addToTotal(hollowBlocks, '圓形建築');
+        }
+
+        // 樓梯計算器
+        function calculateStairs() {
+            const length = parseInt(document.getElementById('stairs-length').value);
+            const width = parseInt(document.getElementById('stairs-width').value);
+            const height = parseInt(document.getElementById('stairs-height').value);
+            
+            if (!validateInputs([length, width, height])) {
+                return;
+            }
+            
+            // 計算樓梯方塊數量
+            let totalStairBlocks = 0;
+            let stepBlocks = 0;
+            
+            // 每層樓梯的方塊數量
+            for (let i = 1; i <= height; i++) {
+                const stepLength = Math.ceil(length * (i / height));
+                stepBlocks += stepLength * width;
+            }
+            
+            // 計算側邊牆壁
+            const sideWalls = 2 * length * height;
+            
+            // 計算總數
+            totalStairBlocks = stepBlocks + sideWalls;
+            
+            const results = {
+                steps: stepBlocks,
+                sideWalls: sideWalls,
+                total: totalStairBlocks,
+                stepCount: height,
+                averageStepLength: Math.round(length / height)
+            };
+            
+            displayResults('stairs-results', '樓梯計算結果', results);
+            addToTotal(totalStairBlocks, '樓梯');
+        }
+
+        // 金字塔計算器
+        function calculatePyramid() {
+            const baseLength = parseInt(document.getElementById('pyramid-base').value);
+            const height = parseInt(document.getElementById('pyramid-height').value);
+            const style = document.getElementById('pyramid-style').value;
+            
+            if (!validateInputs([baseLength, height])) {
+                return;
+            }
+            
+            let totalBlocks = 0;
+            let layerCount = 0;
+            
+            // 計算每層的方塊數量
+            for (let i = 0; i < height; i++) {
+                const currentLayerLength = baseLength - (2 * i);
+                if (currentLayerLength > 0) {
+                    const layerBlocks = currentLayerLength * currentLayerLength;
+                    totalBlocks += layerBlocks;
+                    layerCount++;
+                }
+            }
+            
+            let hollowBlocks = 0;
+            let roomBlocks = 0;
+            
+            if (style === 'hollow') {
+                // 計算空心金字塔
+                const innerBaseLength = Math.max(1, baseLength - 4);
+                const innerHeight = Math.max(1, height - 2);
+                
+                let innerBlocks = 0;
+                for (let i = 0; i < innerHeight; i++) {
+                    const currentInnerLength = innerBaseLength - (2 * i);
+                    if (currentInnerLength > 0) {
+                        innerBlocks += currentInnerLength * currentInnerLength;
+                    }
+                }
+                hollowBlocks = totalBlocks - innerBlocks;
+            } else if (style === 'hollow-with-rooms') {
+                // 計算帶房間的空心金字塔
+                const roomSize = Math.max(3, Math.floor(baseLength / 4));
+                const roomCount = Math.floor((baseLength - 2) / (roomSize + 1));
+                roomBlocks = roomCount * roomSize * roomSize * Math.floor(height / 2);
+                hollowBlocks = totalBlocks - roomBlocks;
+            } else {
+                // 實心金字塔
+                hollowBlocks = totalBlocks;
+            }
+            
+            const results = {
+                solid: totalBlocks,
+                hollow: hollowBlocks,
+                rooms: roomBlocks,
+                layers: layerCount,
+                total: hollowBlocks
+            };
+            
+            displayResults('pyramid-results', '金字塔計算結果', results);
+            addToTotal(hollowBlocks, '金字塔');
+        }
+
+        // 球體計算器
+        function calculateSphere() {
+            const radius = parseInt(document.getElementById('sphere-radius').value);
+            const style = document.getElementById('sphere-style').value;
+            const shellThickness = parseInt(document.getElementById('shell-thickness').value) || 1;
+            
+            if (!validateInputs([radius])) {
+                return;
+            }
+            
+            let totalBlocks = 0;
+            let hollowBlocks = 0;
+            
+            // 計算球體體積（近似值）
+            const volume = (4/3) * Math.PI * Math.pow(radius, 3);
+            totalBlocks = Math.round(volume);
+            
+            if (style === 'hollow') {
+                // 空心球體
+                const innerRadius = Math.max(1, radius - 1);
+                const innerVolume = (4/3) * Math.PI * Math.pow(innerRadius, 3);
+                hollowBlocks = Math.round(volume - innerVolume);
+            } else if (style === 'shell') {
+                // 指定厚度的球殼
+                const innerRadius = Math.max(1, radius - shellThickness);
+                const innerVolume = (4/3) * Math.PI * Math.pow(innerRadius, 3);
+                hollowBlocks = Math.round(volume - innerVolume);
+            } else {
+                // 實心球體
+                hollowBlocks = totalBlocks;
+            }
+            
+            // 計算表面積
+            const surfaceArea = 4 * Math.PI * Math.pow(radius, 2);
+            
+            const results = {
+                solid: totalBlocks,
+                hollow: hollowBlocks,
+                surfaceArea: Math.round(surfaceArea),
+                diameter: radius * 2,
+                total: hollowBlocks
+            };
+            
+            displayResults('sphere-results', '球體計算結果', results);
+            addToTotal(hollowBlocks, '球體');
+        }
+
+        // 總計計算器
+        function calculateTotal() {
+            const blockType = document.getElementById('block-type').value;
+            const customBlockName = document.getElementById('custom-block-name').value;
+            
+            // 更新總方塊數量顯示
+            document.getElementById('total-blocks').value = totalBlocks;
+            
+            // 計算預估建造時間
+            const estimatedTime = calculateEstimatedTime(totalBlocks);
+            document.getElementById('estimated-time').value = estimatedTime;
+            
+            // 顯示詳細結果
+            const resultsDiv = document.getElementById('total-blocks').parentElement.parentElement;
+            let resultsHtml = `
+                <div class="results show">
+                    <h3>總計計算結果</h3>
+                    <div class="result-item">
+                        <span class="result-label">總方塊數量:</span>
+                        <span class="result-value">${totalBlocks.toLocaleString()} 個</span>
+                    </div>
+                    <div class="result-item">
+                        <span class="result-label">預估建造時間:</span>
+                        <span class="result-value">${estimatedTime}</span>
+                    </div>
+                    <div class="result-item">
+                        <span class="result-label">方塊類型:</span>
+                        <span class="result-value">${getBlockTypeName(blockType, customBlockName)}</span>
+                    </div>
+                    <div class="result-item">
+                        <span class="result-label">計算項目數:</span>
+                        <span class="result-value">${calculationHistory.length} 項</span>
+                    </div>
+                </div>
+            `;
+            
+            // 移除舊的結果顯示
+            const oldResults = resultsDiv.querySelector('.results');
+            if (oldResults) {
+                oldResults.remove();
+            }
+            
+            // 添加新的結果顯示
+            resultsDiv.insertAdjacentHTML('beforeend', resultsHtml);
+        }
+
+        // 重置所有計算
+        function resetAll() {
+            totalBlocks = 0;
+            calculationHistory = [];
+            
+            // 重置所有輸入框
+            const inputs = document.querySelectorAll('input[type="number"]');
+            inputs.forEach(input => {
+                if (input.id === 'total-blocks') {
+                    input.value = 0;
+                } else if (input.id === 'estimated-time') {
+                    input.value = '';
+                } else {
+                    // 恢復預設值
+                    const defaultValues = {
+                        'length': 10, 'width': 10, 'height': 5, 'wall-thickness': 1,
+                        'radius': 10, 'circle-height': 5, 'circle-wall-thickness': 1,
+                        'stairs-length': 10, 'stairs-width': 3, 'stairs-height': 5,
+                        'pyramid-base': 20, 'pyramid-height': 10,
+                        'sphere-radius': 10, 'shell-thickness': 2
+                    };
+                    if (defaultValues[input.id]) {
+                        input.value = defaultValues[input.id];
+                    }
+                }
+            });
+            
+            // 隱藏所有結果
+            const results = document.querySelectorAll('.results');
+            results.forEach(result => {
+                result.classList.remove('show');
+            });
+            
+            // 重置選擇框
+            document.getElementById('pyramid-style').value = 'solid';
+            document.getElementById('sphere-style').value = 'solid';
+            document.getElementById('block-type').value = 'stone';
+            
+            // 更新顯示
+            updateShellThicknessVisibility();
+            updateCustomBlockNameVisibility();
+            
+            console.log('所有計算已重置');
+        }
+
+        // 驗證輸入值
+        function validateInputs(values) {
+            for (let value of values) {
+                if (isNaN(value) || value < 1) {
+                    alert('請輸入有效的正整數！');
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        // 顯示計算結果
+        function displayResults(elementId, title, results) {
+            const resultsDiv = document.getElementById(elementId);
+            
+            let html = `<h3>${title}</h3>`;
+            
+            for (let [key, value] of Object.entries(results)) {
+                if (key !== 'total') {
+                    const label = getResultLabel(key);
+                    html += `
+                        <div class="result-item">
+                            <span class="result-label">${label}:</span>
+                            <span class="result-value">${value.toLocaleString()} 個</span>
+                        </div>
+                    `;
+                }
+            }
+            
+            html += `
+                <div class="result-item">
+                    <span class="result-label">總計:</span>
+                    <span class="result-value">${results.total.toLocaleString()} 個</span>
+                </div>
+            `;
+            
+            resultsDiv.innerHTML = html;
+            resultsDiv.classList.add('show');
+        }
+
+        // 獲取結果標籤
+        function getResultLabel(key) {
+            const labels = {
+                solid: '實心方塊',
+                hollow: '空心方塊',
+                walls: '牆壁方塊',
+                floorCeiling: '地板/天花板',
+                steps: '樓梯方塊',
+                sideWalls: '側邊牆壁',
+                rooms: '房間方塊',
+                layers: '層數',
+                surfaceArea: '表面積',
+                diameter: '直徑',
+                circumference: '圓周長度',
+                stepCount: '階梯數',
+                averageStepLength: '平均階梯長度'
+            };
+            return labels[key] || key;
+        }
+
+        // 添加到總計
+        function addToTotal(blocks, description) {
+            totalBlocks += blocks;
+            calculationHistory.push({
+                blocks: blocks,
+                description: description,
+                timestamp: new Date()
+            });
+            
+            // 更新總計顯示
+            document.getElementById('total-blocks').value = totalBlocks;
+            
+            console.log(`已添加 ${blocks} 個方塊 (${description})，總計: ${totalBlocks}`);
+        }
+
+        // 計算預估建造時間
+        function calculateEstimatedTime(blocks) {
+            const blocksPerMinute = 100; // 假設每分鐘放置100個方塊
+            const minutes = Math.ceil(blocks / blocksPerMinute);
+            
+            if (minutes < 60) {
+                return `${minutes} 分鐘`;
+            } else if (minutes < 1440) {
+                const hours = Math.floor(minutes / 60);
+                const remainingMinutes = minutes % 60;
+                return `${hours} 小時 ${remainingMinutes} 分鐘`;
+            } else {
+                const days = Math.floor(minutes / 1440);
+                const remainingHours = Math.floor((minutes % 1440) / 60);
+                return `${days} 天 ${remainingHours} 小時`;
+            }
+        }
+
+        // 獲取方塊類型名稱
+        function getBlockTypeName(blockType, customName) {
+            const blockTypes = {
+                'stone': '石頭',
+                'wood': '木材',
+                'brick': '磚塊',
+                'glass': '玻璃',
+                'concrete': '混凝土',
+                'custom': customName || '自定義方塊'
+            };
+            return blockTypes[blockType] || '未知方塊';
+        }
+
+        // 工具函數：格式化數字
+        function formatNumber(num) {
+            return num.toLocaleString();
+        }
+
+        // 工具函數：顯示通知
+        function showNotification(message, type = 'info') {
+            // 創建通知元素
+            const notification = document.createElement('div');
+            notification.className = `notification ${type}`;
+            notification.textContent = message;
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                padding: 15px 20px;
+                border-radius: 8px;
+                color: white;
+                font-weight: 500;
+                z-index: 1000;
+                animation: slideIn 0.3s ease;
+                background: ${type === 'success' ? '#4CAF50' : type === 'error' ? '#f44336' : '#2196F3'};
+            `;
+            
+            document.body.appendChild(notification);
+            
+            // 3秒後自動移除
+            setTimeout(() => {
+                notification.style.animation = 'slideOut 0.3s ease';
+                setTimeout(() => {
+                    if (notification.parentNode) {
+                        notification.parentNode.removeChild(notification);
+                    }
+                }, 300);
+            }, 3000);
+        }
+    </script>
+</body>
+</html> 

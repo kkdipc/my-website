@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Minecraft 建築小幫手</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <div class="logo">
+                <i class="fas fa-cube"></i>
+                <h1>Minecraft 建築小幫手</h1>
+            </div>
+            <p class="subtitle">計算您的建築所需方塊數量</p>
+        </header>
+
+        <main class="main-content">
+            <div class="calculator-grid">
+                <!-- 基礎形狀計算器 -->
+                <div class="calculator-card">
+                    <div class="card-header">
+                        <i class="fas fa-square"></i>
+                        <h2>基礎形狀計算器</h2>
+                    </div>
+                    <div class="card-content">
+                        <div class="input-group">
+                            <label for="length">長度 (方塊)</label>
+                            <input type="number" id="length" min="1" value="10" placeholder="輸入長度">
+                        </div>
+                        <div class="input-group">
+                            <label for="width">寬度 (方塊)</label>
+                            <input type="number" id="width" min="1" value="10" placeholder="輸入寬度">
+                        </div>
+                        <div class="input-group">
+                            <label for="height">高度 (方塊)</label>
+                            <input type="number" id="height" min="1" value="5" placeholder="輸入高度">
+                        </div>
+                        <div class="input-group">
+                            <label for="wall-thickness">牆壁厚度 (方塊)</label>
+                            <input type="number" id="wall-thickness" min="1" value="1" placeholder="牆壁厚度">
+                        </div>
+                        <button class="calculate-btn" onclick="calculateBasic()">
+                            <i class="fas fa-calculator"></i>
+                            計算方塊數量
+                        </button>
+                        <div class="results" id="basic-results"></div>
+                    </div>
+                </div>
+
+                <!-- 圓形建築計算器 -->
+                <div class="calculator-card">
+                    <div class="card-header">
+                        <i class="fas fa-circle"></i>
+                        <h2>圓形建築計算器</h2>
+                    </div>
+                    <div class="card-content">
+                        <div class="input-group">
+                            <label for="radius">半徑 (方塊)</label>
+                            <input type="number" id="radius" min="1" value="10" placeholder="輸入半徑">
+                        </div>
+                        <div class="input-group">
+                            <label for="circle-height">高度 (方塊)</label>
+                            <input type="number" id="circle-height" min="1" value="5" placeholder="輸入高度">
+                        </div>
+                        <div class="input-group">
+                            <label for="circle-wall-thickness">牆壁厚度 (方塊)</label>
+                            <input type="number" id="circle-wall-thickness" min="1" value="1" placeholder="牆壁厚度">
+                        </div>
+                        <button class="calculate-btn" onclick="calculateCircle()">
+                            <i class="fas fa-calculator"></i>
+                            計算圓形建築
+                        </button>
+                        <div class="results" id="circle-results"></div>
+                    </div>
+                </div>
+
+                <!-- 樓梯計算器 -->
+                <div class="calculator-card">
+                    <div class="card-header">
+                        <i class="fas fa-stairs"></i>
+                        <h2>樓梯計算器</h2>
+                    </div>
+                    <div class="card-content">
+                        <div class="input-group">
+                            <label for="stairs-length">樓梯長度 (方塊)</label>
+                            <input type="number" id="stairs-length" min="1" value="10" placeholder="樓梯長度">
+                        </div>
+                        <div class="input-group">
+                            <label for="stairs-width">樓梯寬度 (方塊)</label>
+                            <input type="number" id="stairs-width" min="1" value="3" placeholder="樓梯寬度">
+                        </div>
+                        <div class="input-group">
+                            <label for="stairs-height">樓梯高度 (方塊)</label>
+                            <input type="number" id="stairs-height" min="1" value="5" placeholder="樓梯高度">
+                        </div>
+                        <button class="calculate-btn" onclick="calculateStairs()">
+                            <i class="fas fa-calculator"></i>
+                            計算樓梯方塊
+                        </button>
+                        <div class="results" id="stairs-results"></div>
+                    </div>
+                </div>
+
+                <!-- 金字塔計算器 -->
+                <div class="calculator-card">
+                    <div class="card-header">
+                        <i class="fas fa-mountain"></i>
+                        <h2>金字塔計算器</h2>
+                    </div>
+                    <div class="card-content">
+                        <div class="input-group">
+                            <label for="pyramid-base">底邊長度 (方塊)</label>
+                            <input type="number" id="pyramid-base" min="1" value="20" placeholder="底邊長度">
+                        </div>
+                        <div class="input-group">
+                            <label for="pyramid-height">金字塔高度 (方塊)</label>
+                            <input type="number" id="pyramid-height" min="1" value="10" placeholder="金字塔高度">
+                        </div>
+                        <div class="input-group">
+                            <label for="pyramid-style">金字塔樣式</label>
+                            <select id="pyramid-style">
+                                <option value="solid">實心金字塔</option>
+                                <option value="hollow">空心金字塔</option>
+                                <option value="hollow-with-rooms">空心帶房間</option>
+                            </select>
+                        </div>
+                        <button class="calculate-btn" onclick="calculatePyramid()">
+                            <i class="fas fa-calculator"></i>
+                            計算金字塔方塊
+                        </button>
+                        <div class="results" id="pyramid-results"></div>
+                    </div>
+                </div>
+
+                <!-- 球體計算器 -->
+                <div class="calculator-card">
+                    <div class="card-header">
+                        <i class="fas fa-globe"></i>
+                        <h2>球體計算器</h2>
+                    </div>
+                    <div class="card-content">
+                        <div class="input-group">
+                            <label for="sphere-radius">球體半徑 (方塊)</label>
+                            <input type="number" id="sphere-radius" min="1" value="10" placeholder="球體半徑">
+                        </div>
+                        <div class="input-group">
+                            <label for="sphere-style">球體樣式</label>
+                            <select id="sphere-style">
+                                <option value="solid">實心球體</option>
+                                <option value="hollow">空心球體</option>
+                                <option value="shell">球殼 (指定厚度)</option>
+                            </select>
+                        </div>
+                        <div class="input-group" id="shell-thickness-group" style="display: none;">
+                            <label for="shell-thickness">球殼厚度 (方塊)</label>
+                            <input type="number" id="shell-thickness" min="1" value="2" placeholder="球殼厚度">
+                        </div>
+                        <button class="calculate-btn" onclick="calculateSphere()">
+                            <i class="fas fa-calculator"></i>
+                            計算球體方塊
+                        </button>
+                        <div class="results" id="sphere-results"></div>
+                    </div>
+                </div>
+
+                <!-- 總計計算器 -->
+                <div class="calculator-card total-card">
+                    <div class="card-header">
+                        <i class="fas fa-list-ol"></i>
+                        <h2>總計計算器</h2>
+                    </div>
+                    <div class="card-content">
+                        <div class="input-group">
+                            <label for="block-type">方塊類型</label>
+                            <select id="block-type">
+                                <option value="stone">石頭</option>
+                                <option value="wood">木材</option>
+                                <option value="brick">磚塊</option>
+                                <option value="glass">玻璃</option>
+                                <option value="concrete">混凝土</option>
+                                <option value="custom">自定義</option>
+                            </select>
+                        </div>
+                        <div class="input-group">
+                            <label for="custom-block-name">自定義方塊名稱</label>
+                            <input type="text" id="custom-block-name" placeholder="輸入方塊名稱" style="display: none;">
+                        </div>
+                        <div class="input-group">
+                            <label for="total-blocks">總方塊數量</label>
+                            <input type="number" id="total-blocks" min="0" value="0" readonly>
+                        </div>
+                        <div class="input-group">
+                            <label for="estimated-time">預估建造時間</label>
+                            <input type="text" id="estimated-time" readonly>
+                        </div>
+                        <button class="calculate-btn" onclick="calculateTotal()">
+                            <i class="fas fa-calculator"></i>
+                            計算總計
+                        </button>
+                        <button class="reset-btn" onclick="resetAll()">
+                            <i class="fas fa-redo"></i>
+                            重置所有計算
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <footer class="footer">
+            <p>&copy; 2024 Minecraft 建築小幫手 | 讓您的建築夢想成真</p>
+        </footer>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html> 
